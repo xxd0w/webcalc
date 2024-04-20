@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator App</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: gray; /* American English spelling */
+      color: white;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .window {
+      position: absolute;
+      border: 2px solid #444;
+      border-radius: 10px;
+      background-color: #1a1a1a;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .title-bar {
+      display: flex;
+      justify-content: space-between;
+      background-color: #444;
+      padding: 5px;
+      border-radius: 5px 5px 0 0;
+      cursor: grab;
+      user-select: none;
+      color: white;
+    }
+
+    .window-content {
+      padding: 10px;
+    }
+
+    button {
+      background-color: #d9534f;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="calculatorWindow" class="window" style="top: 120px; left: 120px;">
+    <div class="title-bar" onmousedown="startDragCalculator(event)">
+      <div id="calculatorWindowTitle">Calculator App</div>
+      <button onclick="closeCalculator()">X</button>
+    </div>
+    <div class="window-content">
+      <p>This is an interactive calculator app!</p>
+      <input type="text" id="calcInput" readonly>
+      <br>
+      <button onclick="appendToCalc('1')">1</button>
+      <button onclick="appendToCalc('2')">2</button>
+      <button onclick="appendToCalc('3')">3</button>
+      <button onclick="appendToCalc('+')">+</button>
+      <br>
+      <button onclick="appendToCalc('4')">4</button>
+      <button onclick="appendToCalc('5')">5</button>
+      <button onclick="appendToCalc('6')">6</button>
+      <button onclick="appendToCalc('-')">-</button>
+      <br>
+      <button onclick="appendToCalc('7')">7</button>
+      <button onclick="appendToCalc('8')">8</button>
+      <button onclick="appendToCalc('9')">9</button>
+      <button onclick="appendToCalc('*')">*</button>
+      <br>
+      <button onclick="appendToCalc('0')">0</button>
+      <button onclick="clearCalc()">C</button>
+      <button onclick="calculate()">=</button>
+      <button onclick="appendToCalc('/')">/</button>
+    </div>
+  </div>
+
+  <script>
+    let isDraggingCalculator = false;
+    let offsetXCalculator, offsetYCalculator;
+
+    function startDragCalculator(e) {
+      isDraggingCalculator = true;
+      offsetXCalculator = e.clientX - document.getElementById('calculatorWindow').getBoundingClientRect().left;
+      offsetYCalculator = e.clientY - document.getElementById('calculatorWindow').getBoundingClientRect().top;
+
+      document.addEventListener('mousemove', dragCalculatorWindow);
+      document.addEventListener('mouseup', stopDragCalculatorWindow);
+    }
+
+    function dragCalculatorWindow(e) {
+      if (isDraggingCalculator) {
+        const calculatorWindow = document.getElementById('calculatorWindow');
+        calculatorWindow.style.left = e.clientX - offsetXCalculator + 'px';
+        calculatorWindow.style.top = e.clientY - offsetYCalculator + 'px';
+      }
+    }
+
+    function stopDragCalculatorWindow() {
+      isDraggingCalculator = false;
+      document.removeEventListener('mousemove', dragCalculatorWindow);
+      document.removeEventListener('mouseup', stopDragCalculatorWindow);
+    }
+
+    function closeCalculator() {
+      document.getElementById('calculatorWindow').style.display = 'none';
+    }
+
+    let currentCalcInput = '';
+
+    function appendToCalc(value) {
+      currentCalcInput += value;
+      document.getElementById('calcInput').value = currentCalcInput;
+    }
+
+    function clearCalc() {
+      currentCalcInput = '';
+      document.getElementById('calcInput').value = '';
+    }
+
+    function calculate() {
+      try {
+        const result = eval(currentCalcInput);
+        document.getElementById('calcInput').value = result;
+        currentCalcInput = result.toString();
+      } catch (error) {
+        document.getElementById('calcInput').value = 'Error';
+        currentCalcInput = '';
+      }
+    }
+  </script>
+</body>
+</html>
